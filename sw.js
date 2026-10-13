@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pixelos-v3';
+const CACHE_NAME = 'pixelos-v2';
 const ASSETS = [
   './PixelOS_Control.html',
   './manifest.json',
