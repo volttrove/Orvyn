@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PixelOS Control</title>
+<title>PixelOS</title>
 
 <!-- PWA Metadata & Manifest -->
 <link rel="manifest" href="manifest.json">
@@ -17,14 +17,31 @@
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#182039 0,#0b0d12 55%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;padding:22px 14px 36px}.app{max-width:760px;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#7c9cff,#b37cff);display:grid;place-items:center;color:#0b0d12;font-weight:900;font-size:20px;box-shadow:0 8px 28px #7c9cff33}.eyebrow{color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}.title{font-size:24px;font-weight:800;letter-spacing:-.04em}.status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}.dot{width:9px;height:9px;border-radius:50%;background:#697386}.dot.on{background:var(--good);box-shadow:0 0 12px #55d6a266}.panel{background:#151923eF;border:1px solid var(--line);border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 12px 36px #0002}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.panel h2{font-size:15px;margin:0;font-weight:750}.sub{color:var(--muted);font-size:12px;margin-top:3px}.btn{border:1px solid var(--line);background:#222938;color:var(--text);border-radius:12px;padding:11px 14px;font-weight:700;font-size:13px;cursor:pointer;transition:.15s}.btn:hover{filter:brightness(1.14)}.btn:disabled{opacity:.38;cursor:not-allowed}.primary{background:var(--accent);color:#0b1020;border-color:transparent}.danger{background:#3b2027;color:#ffb4bd;border-color:#63313c}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.field{display:flex;flex-direction:column;gap:8px;margin:12px 0}.field label{color:#cbd2e0;font-size:12px;font-weight:700}.input,select{width:100%;background:#0d1119;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px 12px;font:inherit;outline:none}.input:focus,select:focus{border-color:var(--accent)}input[type=range]{width:100%;accent-color:var(--accent)}input[type=color]{width:100%;height:43px;border:1px solid var(--line);border-radius:10px;background:#0d1119;padding:4px}.rangehead{display:flex;justify-content:space-between;align-items:center}.value{font-variant-numeric:tabular-nums;color:#c4d0ff;font-weight:800}.hint{color:var(--muted);font-size:12px;margin-top:10px}.log{background:#090c11;border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:46px;max-height:115px;overflow:auto;color:#b4c0d5;font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap}.foot{text-align:center;color:#7e889a;font-size:11px;margin-top:18px}.wide{width:100%}@media(min-width:560px){.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.panel{padding:20px}}
 </style></head>
 <body><main class="app">
-<header class="top"><div class="brand"><div class="logo">PX</div><div><div class="eyebrow">Bluetooth LE · ESP32</div><div class="title">PixelOS Control</div></div></div><div class="status"><span id="dot" class="dot"></span><span id="status">Belum terhubung</span></div></header>
-<section class="panel"><div class="panelhead"><div><h2>Koneksi perangkat</h2><div class="sub">Cari perangkat bernama PixelOS Control</div></div></div><div class="grid"><button id="connect" class="btn primary">＋ Hubungkan BLE</button><button id="disconnect" class="btn" disabled>Putuskan</button></div><div class="hint">Gunakan Chrome atau Edge dengan Bluetooth aktif. Halaman perlu dibuka melalui HTTPS atau localhost.</div></section>
+<header class="top"><div class="brand"><div><div class="eyebrow">Bluetooth LE . controller</div><div class="title">PixelOS</div></div></div><div class="status"><span id="dot" class="dot"></span><span id="status">Belum terhubung</span></div></header>
+<nav class="grid" style="margin:14px 0 18px"><button id="tabAudio" class="btn primary">Velora</button><button id="tabAqua" class="btn">Aqua</button></nav>
+<div id="audioView">
+<section class="panel"><div class="panelhead"><div><h2>Koneksi Velora</h2><div class="sub">Hubungkan ke controller Velora</div></div></div><div class="grid three"><button id="connect" class="btn primary">＋ Pair / Hubungkan</button><button id="reconnect" class="btn">↻ Sambungkan tersimpan</button><button id="disconnect" class="btn" disabled>Putuskan</button></div><div class="hint">Gunakan Chrome/Edge melalui HTTPS atau localhost. Pairing keamanan BLE ditentukan juga oleh firmware perangkat.</div></section>
 <section class="panel"><div class="panelhead"><div><h2>Musik</h2><div class="sub">Kontrol playback Bluetooth Audio</div></div></div><div class="grid three"><button class="btn" data-cmd="PREV">◀ Sebelumnya</button><button class="btn primary" data-cmd="PLAY">▶ Play</button><button class="btn" data-cmd="PAUSE">Ⅱ Pause</button></div><div style="margin-top:9px"><button class="btn wide" data-cmd="NEXT">Berikutnya ▶▶</button></div></section>
 <section class="panel"><div class="panelhead"><div><h2>LED Matrix</h2><div class="sub">Nyalakan atau matikan matrix</div></div></div><div class="grid"><button class="btn primary" data-cmd="ON:MATRIX">Nyalakan matrix</button><button class="btn danger" data-cmd="OF:MATRIX">Matikan matrix</button></div><div class="field"><div class="rangehead"><label for="brightness">Kecerahan</label><span id="brightnessVal" class="value">128 / 255</span></div><input id="brightness" type="range" min="0" max="255" value="128"><button id="sendBrightness" class="btn">Terapkan kecerahan</button></div></section>
 <section class="panel"><div class="panelhead"><div><h2>Visualizer</h2><div class="sub">Pilih mode animasi LED</div></div></div><div class="field"><label for="mode">Mode</label><select id="mode"><option>WAVE</option><option>SPECTRUM</option><option>VU</option><option>MIRROR</option><option>PEAK</option><option>CIRCLE</option><option>LINE</option><option>PLASMA</option><option>RAIN</option><option>TWINKLE</option><option>LAVA</option><option>GLYPH</option><option>TEXT</option></select><button id="sendMode" class="btn primary">Terapkan mode</button></div><div class="field"><label for="colorMode">Warna untuk mode</label><select id="colorMode"><option>WAVE</option><option>SPECTRUM</option><option>VU</option><option>MIRROR</option><option>PEAK</option><option>CIRCLE</option><option>LINE</option><option>PLASMA</option><option>RAIN</option><option>TWINKLE</option><option>LAVA</option><option>GLYPH</option><option>TEXT</option></select></div><div class="controls"><div class="field"><label for="color">Warna solid</label><input id="color" type="color" value="#6688ff"></div><div class="field"><label for="colorType">Efek warna</label><select id="colorType"><option value="solid">Solid (warna pilihan)</option><option value="RAINBOW">Rainbow</option><option value="PEAKHUE">Peak Hue</option><option value="FLOW">Flow</option><option value="PULSE">Pulse</option><option value="CYCLE">Cycle</option><option value="RESET">Warna bawaan</option></select></div></div><button id="sendColor" class="btn wide">Terapkan warna / efek</button></section>
 <section class="panel"><div class="panelhead"><div><h2>Teks berjalan</h2><div class="sub">Kirim teks ke display</div></div></div><div class="grid"><input id="text" class="input" maxlength="40" value="PIXELOS" placeholder="Tulis teks…"><button id="sendText" class="btn primary">Kirim teks</button></div><div style="margin-top:9px"><button class="btn" data-cmd="ABOUT">Tampilkan About</button></div></section>
 <section class="panel"><div class="panelhead"><div><h2>Log</h2><div class="sub">Status perintah BLE terakhir</div></div><button id="clearLog" class="btn">Bersihkan</button></div><div id="log" class="log">App siap. Hubungkan ke PixelOS Control untuk mulai.</div></section>
-<div class="foot">PixelOS Control · BLE GATT · UUID disesuaikan dengan firmware yang diberikan</div>
+</div>
+<div id="aquaView" hidden>
+
+<section class="panel"><div class="panelhead"><div><h2>Koneksi Aqua</h2><div class="sub">Hubungkan ke controller Aqua</div></div></div><div class="grid three"><button id="aquaConnect" class="btn primary">＋ Pair / Hubungkan</button><button id="aquaReconnect" class="btn">↻ Sambungkan tersimpan</button><button id="aquaDisconnect" class="btn" disabled>Putuskan</button></div><div class="status" style="margin-top:12px"><span id="aquaDot" class="dot"></span><span id="aquaStatus">Belum terhubung</span></div><div class="hint">Perangkat BLE: Aquascape. Gunakan Chrome/Edge melalui HTTPS atau localhost. Logo Aqua belum ditambahkan.</div></section>
+<section class="panel"><div class="panelhead"><div><h2>Status Aquascape</h2><div class="sub">Data suhu, RTC, kipas, dan lampu</div></div><button id="aquaRefresh" class="btn" disabled>Refresh</button></div><div class="grid">
+<div class="panel" style="margin:0;padding:13px"><div class="sub">Suhu air</div><div id="aquaTemp" class="title">--.- °C</div></div>
+<div class="panel" style="margin:0;padding:13px"><div class="sub">Tanggal / waktu</div><div id="aquaClock" style="font-weight:800">---- -- --</div><div id="aquaRtc" class="sub">RTC: --</div></div>
+<div class="panel" style="margin:0;padding:13px"><div class="sub">Relay 1 · Kipas</div><div id="aquaR1" style="font-weight:800">--</div><div id="aquaR1Mode" class="sub">Mode: --</div></div>
+<div class="panel" style="margin:0;padding:13px"><div class="sub">Relay 2 · Lampu</div><div id="aquaR2" style="font-weight:800">--</div><div id="aquaR2Mode" class="sub">Mode: --</div></div>
+</div><div id="aquaScheduleInfo" class="hint">Jadwal lampu: --</div></section>
+<section class="panel"><div class="panelhead"><div><h2>Kipas · Relay 1</h2><div class="sub">AUTO mengikuti suhu · ON/OFF manual</div></div></div><div class="grid three"><button class="btn" data-aqua-cmd="R1 AUTO">AUTO</button><button class="btn primary" data-aqua-cmd="R1 ON">ON</button><button class="btn danger" data-aqua-cmd="R1 OFF">OFF</button></div><div class="field"><label for="r1Timer">Timer kipas (detik)</label><input id="r1Timer" class="input" type="number" min="1" step="1" value="3600"><button id="r1TimerSend" class="btn">Nyalakan dengan timer</button></div><div class="hint">Ambang otomatis firmware: kipas ON ≥28,2°C dan OFF ≤27,5°C.</div></section>
+<section class="panel"><div class="panelhead"><div><h2>Lampu · Relay 2</h2><div class="sub">Atur manual, timer, atau jadwal harian</div></div></div><div class="grid three"><button class="btn" data-aqua-cmd="R2 AUTO">AUTO jadwal</button><button class="btn primary" data-aqua-cmd="R2 ON">ON</button><button class="btn danger" data-aqua-cmd="R2 OFF">OFF</button></div><div class="field"><label for="r2Timer">Timer lampu (detik)</label><input id="r2Timer" class="input" type="number" min="1" step="1" value="3600"><button id="r2TimerSend" class="btn">Nyalakan dengan timer</button></div><div class="controls"><div class="field"><label for="lampOn">Lampu menyala</label><input id="lampOn" class="input" type="time" value="18:00"></div><div class="field"><label for="lampOff">Lampu mati</label><input id="lampOff" class="input" type="time" value="22:00"></div></div><button id="saveSchedule" class="btn primary wide">Simpan jadwal lampu</button><div class="hint">Simpan jadwal akan mengaktifkan mode AUTO untuk Relay 2.</div></section>
+<section class="panel"><div class="panelhead"><div><h2>Waktu dan informasi</h2><div class="sub">Sinkronkan RTC dan tampilkan About</div></div></div><div class="field"><label for="aquaDateTime">Tanggal dan waktu perangkat</label><input id="aquaDateTime" class="input" type="datetime-local" step="1"><button id="setAquaTime" class="btn">Atur waktu RTC</button></div><button class="btn wide" data-aqua-cmd="ABOUT">Tampilkan About</button><div class="hint">Perintah STATUS juga dikirim otomatis saat meminta refresh.</div></section>
+<section class="panel"><div class="panelhead"><div><h2>Log Aqua BLE</h2><div class="sub">Perintah dan status terakhir</div></div><button id="aquaClearLog" class="btn">Bersihkan</button></div><div id="aquaLog" class="log">Aqua siap. Hubungkan ke Aquascape untuk mulai.</div></section>
+</div>
+<div class="foot">PixelOS · BLE GATT</div>
 </main>
 <script>
 const SERVICE_UUID='12345678-1234-1234-1234-1234567890ab';
@@ -32,16 +49,101 @@ const CHARACTERISTIC_UUID='12345678-1234-1234-1234-1234567890ac';
 let device=null, characteristic=null;
 const $=id=>document.getElementById(id);
 function log(msg){const el=$('log');const t=new Date().toLocaleTimeString();el.textContent=`[${t}] ${msg}\n`+el.textContent;}
-function setStatus(connected,label){$('dot').classList.toggle('on',connected);$('status').textContent=label;$('connect').disabled=connected;$('disconnect').disabled=!connected;document.querySelectorAll('[data-cmd],#sendBrightness,#sendMode,#sendColor,#sendText').forEach(b=>b.disabled=!connected);}
+function setStatus(connected,label){$('dot').classList.toggle('on',connected);$('status').textContent=label;$('connect').disabled=connected;$('reconnect').disabled=connected;$('disconnect').disabled=!connected;document.querySelectorAll('[data-cmd],#sendBrightness,#sendMode,#sendColor,#sendText').forEach(b=>b.disabled=!connected);}
 async function send(cmd){if(!characteristic){log('Belum terhubung — perintah tidak dikirim: '+cmd);return;}try{const data=new TextEncoder().encode(cmd);if(characteristic.writeValueWithResponse) await characteristic.writeValueWithResponse(data);else await characteristic.writeValue(data);log('Kirim: '+cmd);}catch(e){log('Gagal kirim '+cmd+' — '+e.message);}}
-$('connect').addEventListener('click',async()=>{if(!navigator.bluetooth){log('Web Bluetooth tidak tersedia. Coba Chrome/Edge pada HTTPS atau localhost.');return;}try{log('Mencari perangkat…');device=await navigator.bluetooth.requestDevice({filters:[{name:'PixelOS Control'}],optionalServices:[SERVICE_UUID]});device.addEventListener('gattserverdisconnected',()=>{characteristic=null;setStatus(false,'Terputus');log('Perangkat terputus.');});const server=await device.gatt.connect();const service=await server.getPrimaryService(SERVICE_UUID);characteristic=await service.getCharacteristic(CHARACTERISTIC_UUID);setStatus(true,device.name||'Terhubung');log('Terhubung ke '+(device.name||'PixelOS Control'));}catch(e){log('Koneksi gagal: '+e.message);}}
-);
+async function connectVeloraDevice(chosen){
+  device=chosen;
+  if(!device) throw new Error('Perangkat Velora tidak ditemukan dalam daftar perangkat yang diizinkan. Tekan Pair / Hubungkan dahulu.');
+  if(!device.__veloraDisconnectBound){device.addEventListener('gattserverdisconnected',()=>{characteristic=null;setStatus(false,'Terputus');log('Velora terputus.');});device.__veloraDisconnectBound=true;}
+  const server=await device.gatt.connect();
+  const service=await server.getPrimaryService(SERVICE_UUID);
+  characteristic=await service.getCharacteristic(CHARACTERISTIC_UUID);
+  setStatus(true,device.name||'Velora terhubung');
+  log('Terhubung ke '+(device.name||'perangkat Velora'));
+}
+$('connect').addEventListener('click',async()=>{if(!navigator.bluetooth){log('Web Bluetooth tidak tersedia. Coba Chrome/Edge pada HTTPS atau localhost.');return;}try{log('Memilih perangkat Velora…');const chosen=await navigator.bluetooth.requestDevice({filters:[{name:'PixelOS Control'}],optionalServices:[SERVICE_UUID]});await connectVeloraDevice(chosen);}catch(e){log('Koneksi gagal: '+e.message);}});
+$('reconnect').addEventListener('click',async()=>{if(!navigator.bluetooth?.getDevices){log('Browser belum mendukung daftar perangkat tersimpan. Gunakan Pair / Hubungkan.');return;}try{const devices=await navigator.bluetooth.getDevices();const saved=devices.find(d=>d.name==='PixelOS Control');if(!saved){log('Velora belum tersimpan di izin Bluetooth browser. Tekan Pair / Hubungkan dahulu.');return;}await connectVeloraDevice(saved);}catch(e){log('Reconnect Velora gagal: '+e.message);}});
+
 $('disconnect').addEventListener('click',()=>{if(device?.gatt?.connected)device.gatt.disconnect();characteristic=null;setStatus(false,'Terputus');});
 document.querySelectorAll('[data-cmd]').forEach(b=>b.addEventListener('click',()=>send(b.dataset.cmd)));
 $('brightness').addEventListener('input',e=>$('brightnessVal').textContent=e.target.value+' / 255');$('sendBrightness').addEventListener('click',()=>send('B:'+$('brightness').value));
 $('sendMode').addEventListener('click',()=>send('M:'+$('mode').value));
 $('sendColor').addEventListener('click',()=>{const mode=$('colorMode').value;const type=$('colorType').value;if(type!=='solid'){send('C:'+mode+':'+type);}else{const hex=$('color').value.slice(1);const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);send(`C:${mode}:${r},${g},${b}`);}});
 $('sendText').addEventListener('click',()=>send('T:'+$('text').value));$('text').addEventListener('keydown',e=>{if(e.key==='Enter')send('T:'+$('text').value)});$('clearLog').addEventListener('click',()=>$('log').textContent='Log dibersihkan.');setStatus(false,'Belum terhubung');
+
+
+// Navigasi dua menu: Audio/PixelOS dan Aqua.
+$('tabAudio').addEventListener('click',()=>{ $('audioView').hidden=false; $('aquaView').hidden=true; $('tabAudio').classList.add('primary'); $('tabAqua').classList.remove('primary'); });
+$('tabAqua').addEventListener('click',()=>{ $('audioView').hidden=true; $('aquaView').hidden=false; $('tabAqua').classList.add('primary'); $('tabAudio').classList.remove('primary'); });
+
+// Koneksi BLE Aqua dipisah dari koneksi PixelOS supaya kedua perangkat tidak saling menimpa.
+const AQUA_SERVICE_UUID='12345678-1234-1234-1234-123456789000';
+const AQUA_CHARACTERISTIC_UUID='12345678-1234-1234-1234-123456789001';
+let aquaDevice=null, aquaCharacteristic=null;
+function aquaLog(msg){const el=$('aquaLog');el.textContent=`[${new Date().toLocaleTimeString()}] ${msg}\n`+el.textContent;}
+function aquaSetStatus(connected,label){
+  $('aquaDot').classList.toggle('on',connected);$('aquaStatus').textContent=label;
+  $('aquaConnect').disabled=connected;$('aquaReconnect').disabled=connected;$('aquaDisconnect').disabled=!connected;$('aquaRefresh').disabled=!connected;
+  document.querySelectorAll('[data-aqua-cmd],#r1TimerSend,#r2TimerSend,#saveSchedule,#setAquaTime').forEach(b=>b.disabled=!connected);
+}
+async function sendAqua(cmd){
+  if(!aquaCharacteristic){aquaLog('Belum terhubung — perintah tidak dikirim: '+cmd);return;}
+  try{
+    const data=new TextEncoder().encode(cmd);
+    if(aquaCharacteristic.writeValueWithResponse) await aquaCharacteristic.writeValueWithResponse(data);
+    else await aquaCharacteristic.writeValue(data);
+    aquaLog('Kirim: '+cmd);
+    if(cmd!=='STATUS') setTimeout(()=>sendAqua('STATUS'),250);
+  }catch(e){aquaLog('Gagal kirim '+cmd+' — '+e.message);}
+}
+function parseAquaStatus(raw){
+  const vals={};raw.split(';').forEach(part=>{const i=part.indexOf('=');if(i>0)vals[part.slice(0,i).trim()]=part.slice(i+1).trim();});
+  if(vals.TEMP!==undefined)$('aquaTemp').textContent=(vals.TEMP==='--.-'?'--.-':vals.TEMP)+' °C';
+  if(vals.DATE!==undefined)$('aquaClock').textContent=(vals.DATE||'---- -- --')+' '+(vals.TIME||'--:--:--');
+  if(vals.RTC!==undefined)$('aquaRtc').textContent='RTC: '+vals.RTC;
+  if(vals.R1!==undefined)$('aquaR1').textContent=vals.R1;
+  if(vals.R1_MODE!==undefined)$('aquaR1Mode').textContent='Mode: '+vals.R1_MODE+(vals.R1_TIMER==='ON'?' · Timer '+(vals.R1_REMAIN||'--')+' dtk':'');
+  if(vals.R2!==undefined)$('aquaR2').textContent=vals.R2;
+  if(vals.R2_MODE!==undefined)$('aquaR2Mode').textContent='Mode: '+vals.R2_MODE+(vals.R2_TIMER==='ON'?' · Timer '+(vals.R2_REMAIN||'--')+' dtk':'');
+  if(vals.R2_SCHEDULE!==undefined)$('aquaScheduleInfo').textContent='Jadwal lampu: '+vals.R2_SCHEDULE+' · Ambang kipas ON '+(vals.R1_ON_TEMP||'28.2')+'°C / OFF '+(vals.R1_OFF_TEMP||'27.5')+'°C';
+  aquaLog('Status diterima: '+raw);
+}
+async function connectAquaDevice(chosen){
+  aquaDevice=chosen;
+  if(!aquaDevice) throw new Error('Perangkat Aqua tidak ditemukan dalam daftar perangkat yang diizinkan. Tekan Pair / Hubungkan dahulu.');
+  if(!aquaDevice.__aquaDisconnectBound){aquaDevice.addEventListener('gattserverdisconnected',()=>{aquaCharacteristic=null;aquaSetStatus(false,'Terputus');aquaLog('Perangkat Aqua terputus.');});aquaDevice.__aquaDisconnectBound=true;}
+  const server=await aquaDevice.gatt.connect();
+  const service=await server.getPrimaryService(AQUA_SERVICE_UUID);
+  aquaCharacteristic=await service.getCharacteristic(AQUA_CHARACTERISTIC_UUID);
+  try{
+    aquaCharacteristic.addEventListener('characteristicvaluechanged',e=>{
+      const raw=new TextDecoder().decode(e.target.value);
+      parseAquaStatus(raw);
+    });
+    await aquaCharacteristic.startNotifications();
+  }catch(e){aquaLog('Notifikasi status tidak aktif: '+e.message);}
+  aquaSetStatus(true,aquaDevice.name||'Aqua terhubung');
+  aquaLog('Terhubung ke '+(aquaDevice.name||'Aquascape'));
+  await sendAqua('STATUS');
+}
+$('aquaConnect').addEventListener('click',async()=>{
+  if(!navigator.bluetooth){aquaLog('Web Bluetooth tidak tersedia. Gunakan Chrome/Edge lewat HTTPS atau localhost.');return;}
+  try{aquaLog('Memilih perangkat Aqua…');const chosen=await navigator.bluetooth.requestDevice({filters:[{name:'Aquascape'}],optionalServices:[AQUA_SERVICE_UUID]});await connectAquaDevice(chosen);}catch(e){aquaLog('Koneksi gagal: '+e.message);}
+});
+$('aquaReconnect').addEventListener('click',async()=>{
+  if(!navigator.bluetooth?.getDevices){aquaLog('Browser belum mendukung daftar perangkat tersimpan. Gunakan Pair / Hubungkan.');return;}
+  try{const devices=await navigator.bluetooth.getDevices();const saved=devices.find(d=>d.name==='Aquascape');if(!saved){aquaLog('Aqua belum tersimpan di izin Bluetooth browser. Tekan Pair / Hubungkan dahulu.');return;}await connectAquaDevice(saved);}catch(e){aquaLog('Reconnect Aqua gagal: '+e.message);}
+});
+$('aquaDisconnect').addEventListener('click',()=>{if(aquaDevice?.gatt?.connected)aquaDevice.gatt.disconnect();aquaCharacteristic=null;aquaSetStatus(false,'Terputus');});
+$('aquaRefresh').addEventListener('click',()=>sendAqua('STATUS'));
+document.querySelectorAll('[data-aqua-cmd]').forEach(b=>b.addEventListener('click',()=>sendAqua(b.dataset.aquaCmd)));
+$('r1TimerSend').addEventListener('click',()=>{const n=Number($('r1Timer').value);if(Number.isInteger(n)&&n>0)sendAqua('R1 '+n);else aquaLog('Timer kipas harus berupa detik lebih dari 0.');});
+$('r2TimerSend').addEventListener('click',()=>{const n=Number($('r2Timer').value);if(Number.isInteger(n)&&n>0)sendAqua('R2 '+n);else aquaLog('Timer lampu harus berupa detik lebih dari 0.');});
+function clockCommand(v){return v.replace(':',',');}
+$('saveSchedule').addEventListener('click',()=>{const on=$('lampOn').value,off=$('lampOff').value;if(!on||!off){aquaLog('Isi jam ON dan OFF terlebih dahulu.');return;}sendAqua('R2:'+clockCommand(on)+':'+clockCommand(off));});
+$('setAquaTime').addEventListener('click',()=>{const v=$('aquaDateTime').value;if(!v){aquaLog('Pilih tanggal dan waktu terlebih dahulu.');return;}const d=new Date(v);const pad=n=>String(n).padStart(2,'0');sendAqua('SETTIME '+d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()));});
+$('aquaClearLog').addEventListener('click',()=>$('aquaLog').textContent='Log dibersihkan.');
+aquaSetStatus(false,'Belum terhubung');
 
 // Registrasi Service Worker untuk PWA
 if ('serviceWorker' in navigator) {
