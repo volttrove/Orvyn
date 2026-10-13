@@ -1,7 +1,7 @@
 {
-  "name": "PixelOS Control",
+  "name": "PixelOS",
   "short_name": "PixelOS",
-  "description": "Kontrol Bluetooth LE untuk ESP32 PixelOS",
+  "description": "PixelOS Ecosystem",
   "start_url": "./PixelOS_Control.html",
   "display": "standalone",
   "background_color": "#0b0d12",
