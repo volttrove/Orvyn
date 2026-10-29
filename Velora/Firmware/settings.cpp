@@ -12,7 +12,7 @@ static const int MIN_BOOT_BRIGHTNESS = 8;   // hindari boot dengan LED mati tota
 
 void settingsLoad()
 {
-    if (!prefs.begin("Orvyn", false))
+    if (!prefs.begin("Velora", false))
     {
         Serial.println("NVS: gagal dibuka, pakai nilai default");
         return;
@@ -58,7 +58,7 @@ void settingsLoop()
 
     dirty = false;
 
-    if (!prefs.begin("Orvyn", false))
+    if (!prefs.begin("Velora", false))
         return;
 
     prefs.putUChar("bri", (uint8_t)brightness);
