@@ -1,6 +1,6 @@
-const CACHE_NAME = 'pixelos-v2';
+const CACHE_NAME = 'Orvyn-v1';
 const ASSETS = [
-  './PixelOS_Control.html',
+  './Orvyn_Control.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
@@ -29,17 +29,17 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
 
   // Prefer fresh HTML while retaining an offline fallback.
-  if (request.mode === 'navigate' || request.url.endsWith('/PixelOS_Control.html')) {
+  if (request.mode === 'navigate' || request.url.endsWith('/Orvyn_Control.html')) {
     event.respondWith(
       fetch(request)
         .then(response => {
           if (response.ok) {
             const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put('./PixelOS_Control.html', copy));
+            caches.open(CACHE_NAME).then(cache => cache.put('./Orvyn_Control.html', copy));
           }
           return response;
         })
-        .catch(() => caches.match('./PixelOS_Control.html'))
+        .catch(() => caches.match('./Orvyn_Control.html'))
     );
     return;
   }
