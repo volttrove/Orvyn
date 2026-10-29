@@ -53,10 +53,10 @@ Address        = 0x3C
 SDA/SCL        = ESP32 Wire default
 
 BLE
-Device Name    = Orvyn Control
+Device Name    = Velora Control
 
 A2DP
-Bluetooth Name = Orvyn
+Bluetooth Name = Velora
 
 COMMANDS
 PLAY
