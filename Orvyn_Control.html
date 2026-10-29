@@ -39,7 +39,7 @@
 <section class="panel"><div class="panelhead"><div><h2>Kipas · Relay 1</h2><div class="sub">AUTO mengikuti suhu · ON/OFF manual</div></div></div><div class="grid three"><button class="btn" data-Ocevia-cmd="R1 AUTO">AUTO</button><button class="btn primary" data-Ocevia-cmd="R1 ON">ON</button><button class="btn danger" data-Ocevia-cmd="R1 OFF">OFF</button></div><div class="field"><label for="r1Timer">Timer kipas (detik)</label><input id="r1Timer" class="input" type="number" min="1" step="1" value="3600"><button id="r1TimerSend" class="btn">Nyalakan dengan timer</button></div><div class="hint">Ambang otomatis firmware: kipas ON ≥28,2°C dan OFF ≤27,5°C.</div></section>
 <section class="panel"><div class="panelhead"><div><h2>Lampu · Relay 2</h2><div class="sub">Atur manual, timer, atau jadwal harian</div></div></div><div class="grid three"><button class="btn" data-Ocevia-cmd="R2 AUTO">AUTO jadwal</button><button class="btn primary" data-Ocevia-cmd="R2 ON">ON</button><button class="btn danger" data-Ocevia-cmd="R2 OFF">OFF</button></div><div class="field"><label for="r2Timer">Timer lampu (detik)</label><input id="r2Timer" class="input" type="number" min="1" step="1" value="3600"><button id="r2TimerSend" class="btn">Nyalakan dengan timer</button></div><div class="controls"><div class="field"><label for="lampOn">Lampu menyala</label><input id="lampOn" class="input" type="time" value="18:00"></div><div class="field"><label for="lampOff">Lampu mati</label><input id="lampOff" class="input" type="time" value="22:00"></div></div><button id="saveSchedule" class="btn primary wide">Simpan jadwal lampu</button><div class="hint">Simpan jadwal akan mengaktifkan mode AUTO untuk Relay 2.</div></section>
 <section class="panel"><div class="panelhead"><div><h2>Waktu dan informasi</h2><div class="sub">Sinkronkan RTC dan tampilkan About</div></div></div><div class="field"><label for="OceviaDateTime">Tanggal dan waktu perangkat</label><input id="OceviaDateTime" class="input" type="datetime-local" step="1"><button id="setOceviaTime" class="btn">Atur waktu RTC</button></div><button class="btn wide" data-Ocevia-cmd="ABOUT">Tampilkan About</button><div class="hint">Perintah STATUS juga dikirim otomatis saat meminta refresh.</div></section>
-<section class="panel"><div class="panelhead"><div><h2>Log Ocevia BLE</h2><div class="sub">Perintah dan status terakhir</div></div><button id="OceviaClearLog" class="btn">Bersihkan</button></div><div id="OceviaLog" class="log">Ocevia siap. Hubungkan ke Oceviascape untuk mulai.</div></section>
+<section class="panel"><div class="panelhead"><div><h2>Log Ocevia BLE</h2><div class="sub">Perintah dan status terakhir</div></div><button id="OceviaClearLog" class="btn">Bersihkan</button></div><div id="OceviaLog" class="log">Ocevia siap. Hubungkan ke Ocevia untuk mulai.</div></section>
 </div>
 <div class="foot">Orvyn · BLE GATT</div>
 </main>
@@ -123,16 +123,16 @@ async function connectOceviaDevice(chosen){
     await OceviaCharacteristic.startNotifications();
   }catch(e){OceviaLog('Notifikasi status tidak aktif: '+e.message);}
   OceviaSetStatus(true,OceviaDevice.name||'Ocevia terhubung');
-  OceviaLog('Terhubung ke '+(OceviaDevice.name||'Oceviascape'));
+  OceviaLog('Terhubung ke '+(OceviaDevice.name||'Ocevia'));
   await sendOcevia('STATUS');
 }
 $('OceviaConnect').addEventListener('click',async()=>{
   if(!navigator.bluetooth){OceviaLog('Web Bluetooth tidak tersedia. Gunakan Chrome/Edge lewat HTTPS atau localhost.');return;}
-  try{OceviaLog('Memilih perangkat Ocevia…');const chosen=await navigator.bluetooth.requestDevice({filters:[{name:'Oceviascape'}],optionalServices:[Ocevia_SERVICE_UUID]});await connectOceviaDevice(chosen);}catch(e){OceviaLog('Koneksi gagal: '+e.message);}
+  try{OceviaLog('Memilih perangkat Ocevia…');const chosen=await navigator.bluetooth.requestDevice({filters:[{name:'Ocevia'}],optionalServices:[Ocevia_SERVICE_UUID]});await connectOceviaDevice(chosen);}catch(e){OceviaLog('Koneksi gagal: '+e.message);}
 });
 $('OceviaReconnect').addEventListener('click',async()=>{
   if(!navigator.bluetooth?.getDevices){OceviaLog('Browser belum mendukung daftar perangkat tersimpan. Gunakan Pair / Hubungkan.');return;}
-  try{const devices=await navigator.bluetooth.getDevices();const saved=devices.find(d=>d.name==='Oceviascape');if(!saved){OceviaLog('Ocevia belum tersimpan di izin Bluetooth browser. Tekan Pair / Hubungkan dahulu.');return;}await connectOceviaDevice(saved);}catch(e){OceviaLog('Reconnect Ocevia gagal: '+e.message);}
+  try{const devices=await navigator.bluetooth.getDevices();const saved=devices.find(d=>d.name==='Ocevia');if(!saved){OceviaLog('Ocevia belum tersimpan di izin Bluetooth browser. Tekan Pair / Hubungkan dahulu.');return;}await connectOceviaDevice(saved);}catch(e){OceviaLog('Reconnect Ocevia gagal: '+e.message);}
 });
 $('OceviaDisconnect').addEventListener('click',()=>{if(OceviaDevice?.gatt?.connected)OceviaDevice.gatt.disconnect();OceviaCharacteristic=null;OceviaSetStatus(false,'Terputus');});
 $('OceviaRefresh').addEventListener('click',()=>sendOcevia('STATUS'));
