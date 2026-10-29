@@ -128,11 +128,11 @@ async function connectOceviaDevice(chosen){
 }
 $('OceviaConnect').addEventListener('click',async()=>{
   if(!navigator.bluetooth){OceviaLog('Web Bluetooth tidak tersedia. Gunakan Chrome/Edge lewat HTTPS atau localhost.');return;}
-  try{OceviaLog('Memilih perangkat Ocevia…');const chosen=await navigator.bluetooth.requestDevice({filters:[{name:'Ocevia'}],optionalServices:[Ocevia_SERVICE_UUID]});await connectOceviaDevice(chosen);}catch(e){OceviaLog('Koneksi gagal: '+e.message);}
+  try{OceviaLog('Memilih perangkat Ocevia…');const chosen=await navigator.bluetooth.requestDevice({filters:[{name:'Ocevia Control'}],optionalServices:[Ocevia_SERVICE_UUID]});await connectOceviaDevice(chosen);}catch(e){OceviaLog('Koneksi gagal: '+e.message);}
 });
 $('OceviaReconnect').addEventListener('click',async()=>{
   if(!navigator.bluetooth?.getDevices){OceviaLog('Browser belum mendukung daftar perangkat tersimpan. Gunakan Pair / Hubungkan.');return;}
-  try{const devices=await navigator.bluetooth.getDevices();const saved=devices.find(d=>d.name==='Ocevia');if(!saved){OceviaLog('Ocevia belum tersimpan di izin Bluetooth browser. Tekan Pair / Hubungkan dahulu.');return;}await connectOceviaDevice(saved);}catch(e){OceviaLog('Reconnect Ocevia gagal: '+e.message);}
+  try{const devices=await navigator.bluetooth.getDevices();const saved=devices.find(d=>d.name==='Ocevia Control');if(!saved){OceviaLog('Ocevia belum tersimpan di izin Bluetooth browser. Tekan Pair / Hubungkan dahulu.');return;}await connectOceviaDevice(saved);}catch(e){OceviaLog('Reconnect Ocevia gagal: '+e.message);}
 });
 $('OceviaDisconnect').addEventListener('click',()=>{if(OceviaDevice?.gatt?.connected)OceviaDevice.gatt.disconnect();OceviaCharacteristic=null;OceviaSetStatus(false,'Terputus');});
 $('OceviaRefresh').addEventListener('click',()=>sendOcevia('STATUS'));
