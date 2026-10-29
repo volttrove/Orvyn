@@ -9,7 +9,7 @@ const char *const MODE_NAMES[MODE_TOTAL] =
     "PLASMA", "RAIN", "TWINKLE", "LAVA", "GLYPH", "TEXT"
 };
 
-String runningText = "Orvyn";
+String runningText = "VELORA";
 
 volatile int level = 0;
 
