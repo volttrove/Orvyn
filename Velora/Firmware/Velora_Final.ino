@@ -1,7 +1,7 @@
 /*
 ╔══════════════════════════════════════════════╗
-║                Orvyn                       ║
-║             DMMY VOLTTROVE                   ║
+║                VELORA                        ║
+║              VOLTTROVE                       ║
 ╚══════════════════════════════════════════════╝
 
 TARGET HARDWARE
@@ -77,10 +77,10 @@ use MATRIX_WIDTH/MATRIX_HEIGHT instead.
 
 Project:
 VELORA
-Firmware:
-Orvyn
+Controller
+https://volttrove.github.io/Orvyn/Orvyn.html
 Maker:
-DMMY VOLTTROVE
+VOLTTROVE
 */
 
 

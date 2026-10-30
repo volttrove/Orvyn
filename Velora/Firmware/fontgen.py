@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-fontgen.py - Orvyn font generator (ESP32 / FastLED)
+fontgen.py - Velora font generator (ESP32 / FastLED)
 
 Jalankan:  python fontgen.py
 
@@ -344,7 +344,7 @@ void drawGlyph16(
 
 
 def main():
-    print("Orvyn fontgen")
+    print("Velora fontgen")
     gen_font5x7()
     gen_fontjp16x16()
     print("Selesai. 4 file dibuat di: " + HERE)

@@ -66,8 +66,7 @@ static void drawAboutScreen()
     printCentered("Smart Audio System", 18);
     printCentered("Build 7 Juli 2026", 28);
     printCentered("ESP32 WROOM-32", 38);
-    printCentered("By DMMY VOLTTROVE", 48);
-    printCentered("Orvyn Inside", 56);
+    printCentered("By VOLTTROVE", 48);
 }
 
 static void drawMain(const char *titleText, const char *artistText)
@@ -85,7 +84,7 @@ static void drawMain(const char *titleText, const char *artistText)
 
     if (!a2dpConnected && audioMicActive())
     {
-        display.setCursor(64, 1);
+        display.setCursor(100, 1);
         display.print("MIC");
     }
 

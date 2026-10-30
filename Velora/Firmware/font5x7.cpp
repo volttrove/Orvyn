@@ -199,9 +199,6 @@ const uint8_t font5x7[][5] = {
 
 void drawChar(char c, int x, int y, CRGB color)
 {
-    if (c >= 'a' && c <= 'z')       // font hanya punya huruf kapital
-        c = c - 'a' + 'A';
-
     if (c < 32 || c > 90)
         c = ' ';
 
