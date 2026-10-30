@@ -2,7 +2,7 @@
   "name": "Orvyn",
   "short_name": "Orvyn",
   "description": "Orvyn Ecosystem",
-  "start_url": "./Orvyn_Control.html",
+  "start_url": "./Orvyn.html",
   "display": "standalone",
   "background_color": "#0b0d12",
   "theme_color": "#0b0d12",
