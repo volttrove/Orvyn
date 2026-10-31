@@ -93,7 +93,7 @@ async function sendOcevia(cmd){
     if(OceviaCharacteristic.writeValueWithResponse) await OceviaCharacteristic.writeValueWithResponse(data);
     else await OceviaCharacteristic.writeValue(data);
     OceviaLog('Kirim: '+cmd);
-    if(cmd!=='STATUS') setTimeout(()=>sendOcevia('STATUS'),250);
+    if(cmd!=='STATUS' && cmd!=='ABOUT') setTimeout(()=>sendOcevia('STATUS'),250);
   }catch(e){OceviaLog('Gagal kirim '+cmd+' — '+e.message);}
 }
 function parseOceviaStatus(raw){
@@ -149,7 +149,7 @@ $('OceviaReconnect').addEventListener('click',async()=>{
 });
 $('OceviaDisconnect').addEventListener('click',()=>{if(OceviaDevice?.gatt?.connected)OceviaDevice.gatt.disconnect();OceviaCharacteristic=null;OceviaSetStatus(false,'Terputus');});
 $('OceviaRefresh').addEventListener('click',()=>sendOcevia('STATUS'));
-document.querySelectorAll('[data-Ocevia-cmd]').forEach(b=>b.addEventListener('click',()=>sendOcevia(b.dataset.OceviaCmd)));
+document.querySelectorAll('[data-ocevia-cmd]').forEach(b=>b.addEventListener('click',()=>sendOcevia(b.dataset.oceviaCmd)));
 $('r1TimerSend').addEventListener('click',()=>{const n=Number($('r1Timer').value);if(Number.isInteger(n)&&n>0)sendOcevia('R1 '+n);else OceviaLog('Timer kipas harus berupa detik lebih dari 0.');});
 $('saveFanTemps').addEventListener('click',()=>{
   const on=Number($('fanOnTemp').value), off=Number($('fanOffTemp').value);
