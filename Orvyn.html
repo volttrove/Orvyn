@@ -37,7 +37,7 @@
 <div class="panel" style="margin:0;padding:13px"><div class="sub">Relay 2 · Lampu</div><div id="OceviaR2" style="font-weight:800">--</div><div id="OceviaR2Mode" class="sub">Mode: --</div></div>
 </div><div id="OceviaScheduleInfo" class="hint">Jadwal lampu: --</div><div id="OceviaSensor" class="hint">Sensor suhu: --</div></section>
 <section class="panel"><div class="panelhead"><div><h2>Kipas · Relay 1</h2><div class="sub">AUTO mengikuti suhu · ON/OFF manual</div></div></div><div class="grid three"><button class="btn" data-Ocevia-cmd="R1 AUTO">AUTO</button><button class="btn primary" data-Ocevia-cmd="R1 ON">ON</button><button class="btn danger" data-Ocevia-cmd="R1 OFF">OFF</button></div><div class="field"><label for="r1Timer">Timer kipas (detik)</label><input id="r1Timer" class="input" type="number" min="1" max="86400" step="1" value="3600"><button id="r1TimerSend" class="btn">Nyalakan dengan timer</button></div><div class="controls"><div class="field"><label for="fanOnTemp">Suhu kipas ON (°C)</label><input id="fanOnTemp" class="input" type="number" min="0" max="60" step="0.1" value="28.2"></div><div class="field"><label for="fanOffTemp">Suhu kipas OFF (°C)</label><input id="fanOffTemp" class="input" type="number" min="0" max="60" step="0.1" value="27.5"></div></div><button id="saveFanTemps" class="btn primary wide">Simpan ambang suhu</button><div id="OceviaFanThresholdStatus" class="hint">Ambang saat ini: ON > 28.2°C · OFF ≤ 27.5°C</div><div class="hint">Syarat: suhu OFF harus lebih rendah daripada suhu ON. Rentang yang diterima firmware 0–60°C.</div></section>
-<section class="panel"><div class="panelhead"><div><h2>Lampu · Relay 2</h2><div class="sub">Atur manual, timer, atau jadwal harian</div></div></div><div class="grid three"><button class="btn" data-Ocevia-cmd="R2 AUTO">AUTO jadwal</button><button class="btn primary" data-Ocevia-cmd="R2 ON">ON</button><button class="btn danger" data-Ocevia-cmd="R2 OFF">OFF</button></div><div class="field"><label for="r2Timer">Timer lampu (detik)</label><input id="r2Timer" class="input" type="number" min="1" step="1" value="3600"><button id="r2TimerSend" class="btn">Nyalakan dengan timer</button></div><div class="controls"><div class="field"><label for="lampOn">Lampu menyala</label><input id="lampOn" class="input" type="time" value="18:00"></div><div class="field"><label for="lampOff">Lampu mati</label><input id="lampOff" class="input" type="time" value="22:00"></div></div><button id="saveSchedule" class="btn primary wide">Simpan jadwal lampu</button><div class="hint">Simpan jadwal akan mengaktifkan mode AUTO untuk Relay 2.</div></section>
+<section class="panel"><div class="panelhead"><div><h2>Lampu · Relay 2</h2><div class="sub">Atur manual, timer, atau jadwal harian</div></div></div><div class="grid three"><button class="btn" data-Ocevia-cmd="R2 AUTO">AUTO jadwal</button><button class="btn primary" data-Ocevia-cmd="R2 ON">ON</button><button class="btn danger" data-Ocevia-cmd="R2 OFF">OFF</button></div><div class="field"><label for="r2Timer">Timer lampu (detik)</label><input id="r2Timer" class="input" type="number" min="1" max="86400" step="1" value="3600"><button id="r2TimerSend" class="btn">Nyalakan dengan timer</button></div><div class="controls"><div class="field"><label for="lampOn">Lampu menyala</label><input id="lampOn" class="input" type="time" value="18:00"></div><div class="field"><label for="lampOff">Lampu mati</label><input id="lampOff" class="input" type="time" value="22:00"></div></div><button id="saveSchedule" class="btn primary wide">Simpan jadwal lampu</button><div class="hint">Simpan jadwal akan mengaktifkan mode AUTO untuk Relay 2.</div></section>
 <section class="panel"><div class="panelhead"><div><h2>Waktu dan informasi</h2><div class="sub">Sinkronkan RTC dan tampilkan About</div></div></div><div class="field"><label for="OceviaDateTime">Tanggal dan waktu perangkat</label><input id="OceviaDateTime" class="input" type="datetime-local" step="1"><button id="setOceviaTime" class="btn">Atur waktu RTC</button></div><button class="btn wide" data-Ocevia-cmd="ABOUT">Tampilkan About</button><div class="hint">Perintah STATUS juga dikirim otomatis saat meminta refresh.</div></section>
 <section class="panel"><div class="panelhead"><div><h2>Log Ocevia BLE</h2><div class="sub">Perintah dan status terakhir</div></div><button id="OceviaClearLog" class="btn">Bersihkan</button></div><div id="OceviaLog" class="log">App siap. Hubungkan ke Ocevia untuk mulai.</div></section>
 </div>
@@ -80,8 +80,14 @@ $('tabOcevia').addEventListener('click',()=>{ $('audioView').hidden=true; $('Oce
 const Ocevia_SERVICE_UUID='12345678-1234-1234-1234-123456789000';
 const Ocevia_CHARACTERISTIC_UUID='12345678-1234-1234-1234-123456789001';
 let OceviaDevice=null, OceviaCharacteristic=null;
+
+// Ambang suhu kipas: input hanya ditimpa dari status perangkat kalau belum diedit pengguna.
+let fanDirty=false;     // true = pengguna sudah mengubah angka dan belum disimpan/dikonfirmasi
+let fanPending=null;    // {on,off} yang baru dikirim, menunggu konfirmasi dari status perangkat
+
 function OceviaLog(msg){const el=$('OceviaLog');el.textContent=`[${new Date().toLocaleTimeString()}] ${msg}\n`+el.textContent;}
 function OceviaSetStatus(connected,label){
+  if(!connected){fanDirty=false;fanPending=null;}
   $('OceviaDot').classList.toggle('on',connected);$('OceviaStatus').textContent=label;
   $('OceviaConnect').disabled=connected;$('OceviaReconnect').disabled=connected;$('OceviaDisconnect').disabled=!connected;$('OceviaRefresh').disabled=!connected;
   document.querySelectorAll('[data-Ocevia-cmd],#r1TimerSend,#r2TimerSend,#saveSchedule,#setOceviaTime,#saveFanTemps').forEach(b=>b.disabled=!connected);
@@ -115,8 +121,17 @@ function parseOceviaStatus(raw){
   if(vals.R2_MODE!==undefined)$('OceviaR2Mode').textContent='Mode: '+vals.R2_MODE+(vals.R2_TIMER==='ON'?' · Timer '+(vals.R2_REMAIN||'--')+' dtk':'');
   if(vals.R2_SCHEDULE!==undefined)$('OceviaScheduleInfo').textContent='Jadwal lampu: '+vals.R2_SCHEDULE;
   if(vals.R1_ON_TEMP!==undefined && vals.R1_OFF_TEMP!==undefined){
-    $('fanOnTemp').value=vals.R1_ON_TEMP;
-    $('fanOffTemp').value=vals.R1_OFF_TEMP;
+    const devOn=Number(vals.R1_ON_TEMP), devOff=Number(vals.R1_OFF_TEMP);
+    // Perangkat sudah memakai nilai yang barusan disimpan -> input boleh sinkron lagi.
+    if(fanPending && Math.abs(devOn-fanPending.on)<0.05 && Math.abs(devOff-fanPending.off)<0.05){
+      fanDirty=false; fanPending=null;
+      OceviaLog('Ambang suhu tersimpan di perangkat.');
+    }
+    // Jangan menimpa angka yang sedang/sudah diedit pengguna.
+    if(!fanDirty){
+      $('fanOnTemp').value=vals.R1_ON_TEMP;
+      $('fanOffTemp').value=vals.R1_OFF_TEMP;
+    }
     $('OceviaFanThresholdStatus').textContent='Ambang saat ini: ON > '+vals.R1_ON_TEMP+'°C · OFF ≤ '+vals.R1_OFF_TEMP+'°C';
   }
   OceviaLog('Status diterima: '+raw);
@@ -150,18 +165,24 @@ $('OceviaReconnect').addEventListener('click',async()=>{
 $('OceviaDisconnect').addEventListener('click',()=>{if(OceviaDevice?.gatt?.connected)OceviaDevice.gatt.disconnect();OceviaCharacteristic=null;OceviaSetStatus(false,'Terputus');});
 $('OceviaRefresh').addEventListener('click',()=>sendOcevia('STATUS'));
 document.querySelectorAll('[data-ocevia-cmd]').forEach(b=>b.addEventListener('click',()=>sendOcevia(b.dataset.oceviaCmd)));
-$('r1TimerSend').addEventListener('click',()=>{const n=Number($('r1Timer').value);if(Number.isInteger(n)&&n>0)sendOcevia('R1 '+n);else OceviaLog('Timer kipas harus berupa detik lebih dari 0.');});
+$('r1TimerSend').addEventListener('click',()=>{const n=Number($('r1Timer').value);if(Number.isInteger(n)&&n>0&&n<=86400)sendOcevia('R1 '+n);else OceviaLog('Timer kipas harus 1–86400 detik.');});
+
+// Ambang suhu kipas: tandai "diedit" begitu pengguna mengetik, supaya status BLE tidak menimpanya.
+['fanOnTemp','fanOffTemp'].forEach(id=>$(id).addEventListener('input',()=>{fanDirty=true;fanPending=null;}));
 $('saveFanTemps').addEventListener('click',()=>{
-  const on=Number($('fanOnTemp').value), off=Number($('fanOffTemp').value);
-  if($('fanOnTemp').value.trim()==='' || $('fanOffTemp').value.trim()==='' ||
-     !Number.isFinite(on) || !Number.isFinite(off) ||
-     on<0 || on>60 || off<0 || off>60 || off>=on){
+  const onRaw=$('fanOnTemp').value.trim(), offRaw=$('fanOffTemp').value.trim();
+  const on=Number(Number(onRaw).toFixed(1)), off=Number(Number(offRaw).toFixed(1));
+  if(onRaw===''||offRaw===''||!Number.isFinite(on)||!Number.isFinite(off)||
+     on<0||on>60||off<0||off>60||off>=on){
     OceviaLog('Ambang suhu tidak valid. Isi nilai 0–60°C dan pastikan OFF lebih rendah daripada ON.');
     return;
   }
+  fanPending={on,off};
   sendOcevia('R1 TEMP '+on.toFixed(1)+','+off.toFixed(1));
+  setTimeout(()=>{ if(fanPending) OceviaLog('Perangkat belum mengonfirmasi ambang baru. Periksa nilai atau koneksi.'); },2000);
 });
-$('r2TimerSend').addEventListener('click',()=>{const n=Number($('r2Timer').value);if(Number.isInteger(n)&&n>0)sendOcevia('R2 '+n);else OceviaLog('Timer lampu harus berupa detik lebih dari 0.');});
+
+$('r2TimerSend').addEventListener('click',()=>{const n=Number($('r2Timer').value);if(Number.isInteger(n)&&n>0&&n<=86400)sendOcevia('R2 '+n);else OceviaLog('Timer lampu harus 1–86400 detik.');});
 function clockCommand(v){return v.replace(':',',');}
 $('saveSchedule').addEventListener('click',()=>{const on=$('lampOn').value,off=$('lampOff').value;if(!on||!off){OceviaLog('Isi jam ON dan OFF terlebih dahulu.');return;}sendOcevia('R2:'+clockCommand(on)+':'+clockCommand(off));});
 $('setOceviaTime').addEventListener('click',()=>{const v=$('OceviaDateTime').value;if(!v){OceviaLog('Pilih tanggal dan waktu terlebih dahulu.');return;}const d=new Date(v);const pad=n=>String(n).padStart(2,'0');sendOcevia('SETTIME '+d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()));});
